@@ -9,7 +9,7 @@ self.addEventListener('fetch', (event) => {
     const init = {
       method: event.request.method,
       headers: event.request.headers,
-      credentials: 'include',
+      credentials: 'same-origin',
       redirect: 'follow',
     };
     if (event.request.method !== 'GET' && event.request.method !== 'HEAD') init.body = await event.request.arrayBuffer();
