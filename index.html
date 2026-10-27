@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><title>conn probe</title></head>
+<body><h1 id="h">boot</h1><pre id="out"></pre>
+<script>
+(async () => {
+  const out = document.getElementById('out');
+  const mark = await fetch('/_connection-edge.json').then(r => r.text()).catch(e => 'ERR ' + e);
+  out.textContent = 'marker=' + mark;
+  try {
+    const reg = await navigator.serviceWorker.register('/sw.js', { scope: '/' });
+    await navigator.serviceWorker.ready;
+    if (!navigator.serviceWorker.controller) {
+      await new Promise(res => navigator.serviceWorker.addEventListener('controllerchange', res, { once: true }));
+    }
+    const r = await fetch('/api/v1/connection-host/origin');
+    out.textContent += '\napi=' + r.status + ' ' + (await r.text()).slice(0, 120);
+  } catch (e) { out.textContent += '\nsw_err=' + e; }
+  document.getElementById('h').textContent = 'done';
+})();
+</script></body></html>
